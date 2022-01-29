@@ -48,6 +48,8 @@ This module was built using [koji-cookiecutter-microservice](git@github.com:Bkoj
 
 ## Outputs
 
-No outputs.
+| Name | Description |
+|------|-------------|
+| <a name="output_jenkins_public_ip"></a> [jenkins\_public\_ip](#output\_jenkins\_public\_ip) | below is the jenkins instance ipp |
 <!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
 <!-- prettier-ignore-end -->
