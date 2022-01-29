@@ -53,3 +53,7 @@ This module was built using [koji-cookiecutter-microservice](git@github.com:Bkoj
 | <a name="output_jenkins_public_ip"></a> [jenkins\_public\_ip](#output\_jenkins\_public\_ip) | below is the jenkins instance ipp |
 <!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
 <!-- prettier-ignore-end -->
+
+## Authors
+
+Module is maintained by [Koji Bello](https://github.com/Bkoji1150) with help from [these awesome contributors](https://github.com/terraform-aws-modules/terraform-aws-ec2-instance/graphs/contributors).
