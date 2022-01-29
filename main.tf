@@ -36,10 +36,10 @@ module "Sonarqube_instance" {
   key_name                    = aws_key_pair.key.id
   ami                         = var.ami
   user_data                   = "${path.root}/sonar.tpl"
-
 }
 
 resource "aws_iam_policy" "ec2_policy" {
+
   name        = "ec2_policy"
   path        = "/"
   description = "Policy to provide permission to EC2"
