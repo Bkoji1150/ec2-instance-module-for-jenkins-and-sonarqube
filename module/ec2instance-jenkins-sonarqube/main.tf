@@ -277,4 +277,12 @@ resource "aws_spot_instance_request" "this" {
     create = lookup(var.timeouts, "create", null)
     delete = lookup(var.timeouts, "delete", null)
   }
+  lifecycle {
+    ignore_changes = [
+      # Ignore changes to tags, e.g. because a management agent
+      # updates these based on some ruleset managed elsewhere.
+      user_data,
+
+    ]
+  }
 }

@@ -26,5 +26,5 @@ override.tf.json
 .terraformrc
 terraform.rc
 *.plan
-.idea
+*.idea
 *.bkp

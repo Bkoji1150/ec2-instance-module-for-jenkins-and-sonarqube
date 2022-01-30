@@ -62,3 +62,15 @@ sudo pip3 install awscli boto3 botocore --upgrade --user
 sudo yum install -y yum-utils
 sudo yum-config-manager --add-repo https://rpm.releases.hashicorp.com/AmazonLinux/hashicorp.repo
 sudo yum -y install terraform
+
+# steps to upgrate to the latest jenkins version
+#Jenkins Server File Hierarchy
+#First, we are going to check the home directory of our Jenkins.
+# grep jenkins /etc/passwd | cut -d: -f6
+
+# Upgrade The Jenkins Server
+# Step 1: Stop The Running Jenkins Server
+
+# sudo systemctl stop jenkins 
+# cd /var/lib
+# tar -cvzf jenkins_date.tar.gz jenkins/  //You can specific backup

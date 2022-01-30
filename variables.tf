@@ -27,6 +27,27 @@ variable "sonarqube_name" {
 }
 
 variable "jenkins_name" {
-  description = "instance name for jenkins instance"
+  description = "instance name for jenkins master"
   default     = "JenkinsMaster"
+}
+
+variable "ebs_volume_attachmentName" {
+  description = "Name of the ebs volume attach to jenkins instance"
+  default     = "hqr-ec2-jenkins_volume-attachment"
+}
+
+variable "agent_instancetype" {
+  description = "Instance type for both jenkins instance and sonarqube"
+  default     = "t2.medium"
+}
+
+variable "jenkins_port" {
+  description = "Jenkins port"
+  type        = number
+  default     = 8080
+}
+
+variable "jenkins_agent" {
+  description = "instance name for jenkins agant"
+  default     = "jenkinsagent"
 }

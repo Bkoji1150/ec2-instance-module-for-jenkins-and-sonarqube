@@ -2,14 +2,17 @@
 locals {
   default_tags = {
     name                    = "JenkinsMaster"
-    Created_by              = "devops@hqr.io"
+    Created_by              = "Terraform"
     App_Name                = "ovid"
     Cost_center             = "xyz222"
-    Business_unit           = "GBS"
+    Business_unit           = "Automation"
     App_role                = "web_server"
     Environment             = "dev"
     Security_Classification = "Internal"
   }
+  availability_zone = "${var.aws_region}a"
+  name              = var.ebs_volume_attachmentName
+  region            = var.aws_region
 }
 
 resource "aws_key_pair" "key" {
@@ -17,10 +20,21 @@ resource "aws_key_pair" "key" {
   public_key = file(var.public_key_path)
 }
 
-module "jenkins_instance" {
+module "jenkins_master" {
   source                      = "./module/ec2instance-jenkins-sonarqube"
   instance_type               = var.instance_type
   name                        = var.jenkins_name
+  ami                         = var.ami
+  associate_public_ip_address = true
+  iam_instance_profile        = aws_iam_instance_profile.ec2_profile.name
+  key_name                    = aws_key_pair.key.id
+  user_data                   = "${path.root}/template.tpl"
+}
+
+module "jenkins_agent" {
+  source                      = "./module/ec2instance-jenkins-sonarqube"
+  instance_type               = var.agent_instancetype
+  name                        = var.jenkins_agent
   ami                         = var.ami
   associate_public_ip_address = true
   iam_instance_profile        = aws_iam_instance_profile.ec2_profile.name
@@ -36,6 +50,20 @@ module "Sonarqube_instance" {
   key_name                    = aws_key_pair.key.id
   ami                         = var.ami
   user_data                   = "${path.root}/sonar.tpl"
+}
+
+resource "aws_volume_attachment" "this" {
+  device_name = "/dev/sdh"
+  volume_id   = aws_ebs_volume.this.id
+  instance_id = module.jenkins_master.jenkins_id[0]
+}
+
+resource "aws_ebs_volume" "this" {
+  availability_zone = local.availability_zone
+  size              = 50
+  tags = {
+    Name = "jenkinsMater_ebs"
+  }
 }
 
 resource "aws_iam_policy" "ec2_policy" {
