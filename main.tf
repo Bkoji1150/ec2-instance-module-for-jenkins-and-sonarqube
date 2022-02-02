@@ -20,21 +20,12 @@ resource "aws_key_pair" "key" {
   public_key = file(var.public_key_path)
 }
 
-module "jenkins_master" {
-  source                      = "./module/ec2instance-jenkins-sonarqube"
-  instance_type               = var.instance_type
-  name                        = var.jenkins_name
-  ami                         = var.ami
-  associate_public_ip_address = true
-  iam_instance_profile        = aws_iam_instance_profile.ec2_profile.name
-  key_name                    = aws_key_pair.key.id
-  user_data                   = "${path.root}/template.tpl"
-}
+module "jenkins_client" {
+  source = "./module/ec2instance-jenkins-sonarqube"
 
-module "jenkins_agent" {
-  source                      = "./module/ec2instance-jenkins-sonarqube"
-  instance_type               = var.agent_instancetype
-  name                        = var.jenkins_agent
+  for_each                    = toset(var.jenkins_client)
+  instance_type               = var.instance_type
+  name                        = "jenkins-${each.key}"
   ami                         = var.ami
   associate_public_ip_address = true
   iam_instance_profile        = aws_iam_instance_profile.ec2_profile.name
@@ -55,19 +46,15 @@ module "Sonarqube_instance" {
 resource "aws_volume_attachment" "this" {
   device_name = "/dev/sdh"
   volume_id   = aws_ebs_volume.this.id
-  instance_id = module.jenkins_master.jenkins_id[0]
+  instance_id = module.Sonarqube_instance.jenkins_id[0]
 }
 
 resource "aws_ebs_volume" "this" {
   availability_zone = local.availability_zone
   size              = 50
-  tags = {
-    Name = "jenkinsMater_ebs"
-  }
 }
 
 resource "aws_iam_policy" "ec2_policy" {
-
   name        = "ec2_policy"
   path        = "/"
   description = "Policy to provide permission to EC2"
@@ -121,10 +108,21 @@ resource "aws_iam_policy" "ec2_policy" {
       {
         "Effect" : "Allow",
         "Action" : "*",
-        "Resource" : ["*"]
+        "Resource" : "*"
       }
     ]
   })
+}
+# 
+resource "aws_iam_policy_attachment" "ec2_policy_role" {
+  name       = "ec2_attachment"
+  roles      = [aws_iam_role.ec2_role.name]
+  policy_arn = aws_iam_policy.ec2_policy.arn
+}
+
+resource "aws_iam_instance_profile" "ec2_profile" {
+  name = "Jenkins-instance-role"
+  role = aws_iam_role.ec2_role.name
 }
 
 resource "aws_iam_role" "ec2_role" {
@@ -145,15 +143,4 @@ resource "aws_iam_role" "ec2_role" {
       }
     ]
   })
-}
-
-resource "aws_iam_policy_attachment" "ec2_policy_role" {
-  name       = "ec2_attachment"
-  roles      = [aws_iam_role.ec2_role.name]
-  policy_arn = aws_iam_policy.ec2_policy.arn
-}
-
-resource "aws_iam_instance_profile" "ec2_profile" {
-  name = "Jenkins-instance-role"
-  role = aws_iam_role.ec2_role.name
 }

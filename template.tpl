@@ -5,9 +5,12 @@ sudo yum install wget -y
 sudo yum install git -y
 sudo yum install epel-release java-11-openjdk-devel
 sudo amazon-linux-extras install epel -y
-sudo wget -O /etc/yum.repos.d/jenkins.repo https://pkg.jenkins.io/redhat-stable/jenkins.repo
-sudo rpm --import https://pkg.jenkins.io/redhat-stable/jenkins.io.key
+sudo wget -O /etc/yum.repos.d/jenkins.repo https://pkg.jenkins.io/redhat/jenkins.repo
+sudo rpm --import https://pkg.jenkins.io/redhat/jenkins.io.key
 sudo yum install jenkins -y
+sudo dnf upgrade
+sudo dnf install chkconfig java-devel
+sudo dnf install jenkins
 # Start jenkins service
 sudo systemctl start jenkins
 # Setup Jenkins to start at boot
@@ -62,15 +65,3 @@ sudo pip3 install awscli boto3 botocore --upgrade --user
 sudo yum install -y yum-utils
 sudo yum-config-manager --add-repo https://rpm.releases.hashicorp.com/AmazonLinux/hashicorp.repo
 sudo yum -y install terraform
-
-# steps to upgrate to the latest jenkins version
-#Jenkins Server File Hierarchy
-#First, we are going to check the home directory of our Jenkins.
-# grep jenkins /etc/passwd | cut -d: -f6
-
-# Upgrade The Jenkins Server
-# Step 1: Stop The Running Jenkins Server
-
-# sudo systemctl stop jenkins 
-# cd /var/lib
-# tar -cvzf jenkins_date.tar.gz jenkins/  //You can specific backup

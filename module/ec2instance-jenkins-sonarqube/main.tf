@@ -10,11 +10,10 @@ resource "aws_instance" "this" {
   instance_type        = var.instance_type
   cpu_core_count       = var.cpu_core_count
   cpu_threads_per_core = var.cpu_threads_per_core
-  user_data = base64encode(
-    templatefile(var.user_data,
-      {
-        vars = []
-  }))
+  user_data = templatefile(var.user_data,
+    {
+      vars = []
+  })
   user_data_base64 = var.user_data_base64
   hibernation      = var.hibernation
 
@@ -33,7 +32,15 @@ resource "aws_instance" "this" {
   ipv6_address_count          = var.ipv6_address_count
   ipv6_addresses              = var.ipv6_addresses
 
+
   ebs_optimized = var.ebs_optimized
+  #  lifecycle {
+  #   ignore_changes = [
+  #     # Ignore changes to tags, e.g. because a management agent
+  #     # updates these based on some ruleset managed elsewhere.
+  #     user_data,
+  #   ]
+  # }
 
   dynamic "capacity_reservation_specification" {
     for_each = var.capacity_reservation_specification != null ? [var.capacity_reservation_specification] : []
@@ -276,13 +283,5 @@ resource "aws_spot_instance_request" "this" {
   timeouts {
     create = lookup(var.timeouts, "create", null)
     delete = lookup(var.timeouts, "delete", null)
-  }
-  lifecycle {
-    ignore_changes = [
-      # Ignore changes to tags, e.g. because a management agent
-      # updates these based on some ruleset managed elsewhere.
-      user_data,
-
-    ]
   }
 }

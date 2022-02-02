@@ -12,6 +12,7 @@ variable "aws_region" {
 
 variable "ami" {
   type        = string
+  sensitive   = true
   description = "ami id specific only to for jenkins/sonarqube build in us-east-1"
   default     = "ami-0a8b4cd432b1c3063"
 }
@@ -26,9 +27,10 @@ variable "sonarqube_name" {
   default     = "Sonarqube"
 }
 
-variable "jenkins_name" {
+variable "jenkins_client" {
   description = "instance name for jenkins master"
-  default     = "JenkinsMaster"
+  type        = list(any)
+  default     = ["Master", "agent"]
 }
 
 variable "ebs_volume_attachmentName" {
@@ -36,18 +38,8 @@ variable "ebs_volume_attachmentName" {
   default     = "hqr-ec2-jenkins_volume-attachment"
 }
 
-variable "agent_instancetype" {
-  description = "Instance type for both jenkins instance and sonarqube"
-  default     = "t2.medium"
-}
-
 variable "jenkins_port" {
   description = "Jenkins port"
   type        = number
   default     = 8080
-}
-
-variable "jenkins_agent" {
-  description = "instance name for jenkins agant"
-  default     = "jenkinsagent"
 }
